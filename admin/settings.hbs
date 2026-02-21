@@ -1,0 +1,159 @@
+<main class="container-xl">
+    <div id="admin_token_warning" class="alert alert-warning alert-dismissible fade show d-none">
+        <button type="button" class="btn-close" data-bs-target="admin_token_warning" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+        Stai utilizzando un `ADMIN_TOKEN` in testo normale, il che non è sicuro.<br>
+        Genera una stringa PHC Argon2 sicura utilizzando `vaultwarden hash` o `argon2`.<br>
+        Vedi: <a href="https://github.com/dani-garcia/vaultwarden/wiki/Enabling-admin-page#secure-the-admin_token" target="_blank" rel="noopener noreferrer">Abilitazione pagina admin - Proteggere l'`ADMIN_TOKEN`</a>
+    </div>
+
+    <div id="config-block" class="align-items-center p-3 mb-3 bg-secondary rounded shadow">
+        <div>
+            <h6 class="text-white mb-3">Configurazione</h6>
+            <div class="small text-white mb-3">
+                <span class="font-weight-bolder">NOTA:</span> Le impostazioni qui sovrascrivono le variabili d'ambiente. Una volta salvate, si consiglia di smettere di impostarle per evitare confusione.<br>
+                Questo non si applica alla sezione di sola lettura, che può essere impostata solo tramite variabili d'ambiente.<br>
+                Le impostazioni che vengono sovrascritte sono mostrate con <span class="is-overridden-true alert-row px-1">uno sfondo di colore giallo</span>.
+            </div>
+
+            <form class="form needs-validation" id="config-form" novalidate>
+                {{#each page_data.config}}
+                {{#if groupdoc}}
+                <div class="card mb-3">
+                    <button id="b_{{group}}" type="button" class="card-header text-start btn btn-link text-decoration-none" aria-expanded="false" aria-controls="g_{{group}}" data-bs-toggle="collapse" data-bs-target="#g_{{group}}">{{groupdoc}}</button>
+                    <div id="g_{{group}}" class="card-body collapse">
+                        {{#each elements}}
+                        {{#if editable}}
+                        <div class="row my-2 align-items-center is-overridden-{{overridden}} alert-row" title="[{{name}}] {{doc.description}}">
+                            {{#case type "text" "number" "password"}}
+                            <label for="input_{{name}}" class="col-sm-3 col-form-label">{{doc.name}}</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input class="form-control conf-{{type}}" id="input_{{name}}" type="{{type}}"
+                                        name="{{name}}" value="{{value}}" {{#if default}} placeholder="Predefinito: {{default}}"{{/if}}>
+                                    {{#case type "password"}}
+                                        <button class="btn btn-outline-secondary input-group-text" type="button" data-vw-pw-toggle="input_{{name}}">Mostra/nascondi</button>
+                                    {{/case}}
+                                </div>
+                            </div>
+                            {{/case}}
+                            {{#case type "checkbox"}}
+                            <div class="col-sm-3 col-form-label">{{doc.name}}</div>
+                            <div class="col-sm-8">
+                                <div class="form-check">
+                                    <input class="form-check-input conf-{{type}}" type="checkbox" id="input_{{name}}"
+                                        name="{{name}}" {{#if value}} checked {{/if}}>
+
+                                    <label class="form-check-label" for="input_{{name}}"> Predefinito: {{default}} </label>
+                                </div>
+                            </div>
+                            {{/case}}
+                        </div>
+                        {{/if}}
+                        {{/each}}
+                        {{#case group "smtp"}}
+                            <div class="row my-2 align-items-center pt-3 border-top" title="Invia un'email di prova all'indirizzo email specificato">
+                                <label for="smtp-test-email" class="col-sm-3 col-form-label">Test SMTP</label>
+                                <div class="col-sm-8 input-group">
+                                    <input class="form-control" id="smtp-test-email" type="email" placeholder="Inserisci email di prova" required spellcheck="false">
+                                    <button type="button" class="btn btn-outline-primary input-group-text" id="smtpTest">Invia email di prova</button>
+                                    <div class="invalid-tooltip">Fornisci un indirizzo email valido</div>
+                                </div>
+                            </div>
+                        {{/case}}
+                    </div>
+                </div>
+                {{/if}}
+                {{/each}}
+
+                <div class="card mb-3">
+                    <button id="b_readonly" type="button" class="card-header text-start btn btn-link text-decoration-none" aria-expanded="false" aria-controls="g_readonly"
+                            data-bs-toggle="collapse" data-bs-target="#g_readonly">Configurazione di sola lettura</button>
+                    <div id="g_readonly" class="card-body collapse">
+                        <div class="small mb-3">
+                            NOTA: Queste opzioni non possono essere modificate nell'editor perché richiederebbero il
+                            riavvio del server. Per modificarle, è necessario impostare le variabili d'ambiente corrette
+                            all'avvio del server. È possibile verificare i nomi delle variabili nei tooltip di ciascuna opzione.
+                        </div>
+
+                        {{#each page_data.config}}
+                        {{#each elements}}
+                        {{#unless editable}}
+                        <div class="row my-2 align-items-center alert-row" title="[{{name}}] {{doc.description}}">
+                            {{#case type "text" "number" "password"}}
+                            <label for="input_{{name}}" class="col-sm-3 col-form-label">{{doc.name}}</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                {{!--
+                                      Imposta anche l'input database_url come password qui.
+                                      Se lo impostassimo come password in config.rs, i caratteri non verrebbero mascherati nella stringa di supporto.
+                                      A volte questo è più utile per il supporto rispetto a soli 3 asterischi.
+                                --}}
+                                {{#if (eq name "database_url")}}
+                                    <input readonly class="form-control" id="input_{{name}}" type="password" value="{{value}}" {{#if default}} placeholder="Predefinito: {{default}}" {{/if}}>
+                                    <button class="btn btn-outline-secondary" type="button" data-vw-pw-toggle="input_{{name}}">Mostra/nascondi</button>
+                                {{else}}
+                                    <input readonly class="form-control" id="input_{{name}}" type="{{type}}" value="{{value}}" {{#if default}} placeholder="Predefinito: {{default}}" {{/if}} spellcheck="false">
+                                    {{#case type "password"}}
+                                    <button class="btn btn-outline-secondary" type="button" data-vw-pw-toggle="input_{{name}}">Mostra/nascondi</button>
+                                    {{/case}}
+                                {{/if}}
+                                </div>
+                            </div>
+                            {{/case}}
+                            {{#case type "checkbox"}}
+                            <div class="col-sm-3 col-form-label">{{doc.name}}</div>
+                            <div class="col-sm-8">
+                                <div class="form-check align-middle">
+                                    <input disabled class="form-check-input" type="checkbox" id="input_{{name}}"
+                                        {{#if value}} checked {{/if}}>
+
+                                    <label class="form-check-label" for="input_{{name}}"> Predefinito: {{default}} </label>
+                                </div>
+                            </div>
+                            {{/case}}
+                        </div>
+                        {{/unless}}
+                        {{/each}}
+                        {{/each}}
+
+                    </div>
+                </div>
+
+                {{#if page_data.can_backup}}
+                <div class="card mb-3">
+                    <button id="b_database" type="button" class="card-header text-start btn btn-link text-decoration-none" aria-expanded="false" aria-controls="g_database"
+                            data-bs-toggle="collapse" data-bs-target="#g_database">Backup database</button>
+                    <div id="g_database" class="card-body collapse">
+                        <div class="small mb-3">
+                            ATTENZIONE: Questa funzione crea solo una copia di backup del database SQLite.
+                            Non include configurazioni o allegati che potrebbero essere necessari per
+                            ripristinare completamente un'istanza di Vaultwarden. Per informazioni su
+                            come eseguire backup completi, consultare la pagina wiki sui
+                            <a href="https://github.com/dani-garcia/vaultwarden/wiki/Backing-up-your-vault" target="_blank" rel="noopener noreferrer">backup</a>.
+                        </div>
+                        <button type="button" class="btn btn-primary" id="backupDatabase">Backup database</button>
+                    </div>
+                </div>
+                {{/if}}
+
+                <button type="submit" class="btn btn-primary">Salva</button>
+                <button type="button" class="btn btn-danger float-end" id="deleteConf">Ripristina predefiniti</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<style>
+    #config-block ::placeholder {
+        /* La maggior parte dei browser moderni lo supporta ora. */
+        color: orangered;
+    }
+
+    .is-overridden-true {
+        --bs-alert-color: #664d03;
+        --bs-alert-bg: #fff3cd;
+        --bs-alert-border-color: #ffecb5;
+    }
+</style>
+
+<script src="{{urlpath}}/vw_static/admin_settings.js"></script>
