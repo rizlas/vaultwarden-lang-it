@@ -6,4 +6,4 @@ as described
 [here](https://github.com/dani-garcia/vaultwarden/wiki/Translating-the-email-templates).
 Admin and 404 templates are also provided.
 
-:warning: Tested for `v1.35.3`
+:warning: Tested for `v1.35.6`

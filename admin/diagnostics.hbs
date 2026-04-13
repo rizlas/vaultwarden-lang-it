@@ -194,6 +194,15 @@
                     <dd class="col-sm-7">
                         <span id="http-response-errors" class="d-block"></span>
                     </dd>
+                    {{#if page_data.invalid_feature_flags}}
+                    <dt class="col-sm-5">Flag di funzionalità non validi
+                        <span class="badge bg-warning text-dark abbr-badge" id="feature-flag-warning" title="Alcuni flag di funzionalità non sono validi 
+                        o sono obsoleti!">Avviso</span>
+                    </dt>
+                    <dd class="col-sm-7">
+                        <span id="feature-flags" class="d-block"><b>Flag:</b> <span id="feature-flags-string">{{page_data.invalid_feature_flags}}</span></span>
+                    </dd>
+                    {{/if}}
                 </dl>
             </div>
         </div>
