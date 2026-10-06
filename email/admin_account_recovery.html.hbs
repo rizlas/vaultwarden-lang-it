@@ -1,10 +1,17 @@
-La Master Password è stata cambiata
+Recupero account da parte dell'amministratore dell'organizzazione {{org_name}}
 <!---------------->
 {{> email/email_header }}
 <table width="100%" cellpadding="0" cellspacing="0" style="margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 16px; color: #333; line-height: 25px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none;">
     <tr style="margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 16px; color: #333; line-height: 25px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none;">
         <td class="content-block" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 16px; color: #333; line-height: 25px; margin: 0; -webkit-font-smoothing: antialiased; padding: 0 0 10px; -webkit-text-size-adjust: none;" valign="top">
-            La master password di <b style="margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 16px; color: #333; line-height: 25px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none;">{{user_name}}</b> è stata cambiata da un amministratore nella tua organizzazione <b style="margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 16px; color: #333; line-height: 25px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none;">{{org_name}}</b>. Se non hai avviato tu questa richiesta, per favore contatta immediatamente il tuo amministratore.
+            {{#if reset_password}}
+                La master password di <b style="margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 16px; color: #333; line-height: 25px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none;">{{user_name}}</b> è stata cambiata.
+            {{/if}}
+            {{#if reset_2fa}}
+                I tuoi metodi di verifica in due passaggi sono stati reimpostati.{{#if fallback_2fa_email}} La verifica in due passaggi tramite email è stata attivata come alternativa.{{/if}}
+            {{/if}}
+            <br>
+            Se non hai avviato tu questa richiesta, per favore contatta immediatamente il tuo amministratore.
         </td>
     </tr>
 </table>

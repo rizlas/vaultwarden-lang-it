@@ -1,4 +1,4 @@
-<main class="container-xl">
+<main class="container-xxl">
     <div id="diagnostics-block" class="my-3 p-3 rounded shadow">
         <h6 class="border-bottom pb-2 mb-2">Diagnostica</h6>
 
@@ -74,6 +74,16 @@
                         <span class="badge bg-info text-dark abbr-badge" title="Le variabili d'ambiente sono sovrascritte da config.json.&#013;&#010;{{page_data.overrides}}">Dettagli</span>
                     {{/if}}
                     {{#unless page_data.overrides}}
+                        <span class="d-block"><b>No</b></span>
+                    {{/unless}}
+                    </dd>
+                    <dt class="col-sm-5">Utilizza template personalizzati</dt>
+                    <dd class="col-sm-7">
+                    {{#if page_data.template_overrides}}
+                        <span class="d-inline"><b>Sì</b></span>
+                        <span class="badge bg-info text-dark abbr-badge" title="Vengono utilizzati file di template personalizzati.&#013;&#010;{{page_data.template_overrides}}">Dettagli</span>
+                    {{/if}}
+                    {{#unless page_data.template_overrides}}
                         <span class="d-block"><b>No</b></span>
                     {{/unless}}
                     </dd>

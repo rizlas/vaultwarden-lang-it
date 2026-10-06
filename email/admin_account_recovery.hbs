@@ -1,0 +1,12 @@
+Recupero account da parte dell'amministratore dell'organizzazione {{org_name}}
+<!---------------->
+{{#if reset_password}}
+La master password di {{user_name}} è stata cambiata.
+{{/if}}
+{{#if reset_2fa}}
+I tuoi metodi di verifica in due passaggi sono stati reimpostati.{{#if fallback_2fa_email}} La verifica in due passaggi tramite email è stata attivata come alternativa.{{/if}}
+{{/if}}
+
+Se non hai avviato tu questa richiesta, per favore contatta immediatamente il tuo amministratore.
+
+{{> email/email_footer_text }}
